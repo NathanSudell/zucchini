@@ -1,10 +1,14 @@
+[![Build Status](https://api.travis-ci.org/zucchini-src/zucchini.png)](http://travis-ci.org/zucchini-src/zucchini)
+
 Pre-requisites
 --------------
- 1. XCode 4.2
- 2. A few command line tools:
+ 1. Mac OS X >= 10.6
+ 2. XCode >= 4.2
+ 3. Ruby >= 1.9.2
+ 4. A few command line tools:
 
 ```
-brew update && brew install imagemagick && brew install coffee-script 
+brew update && brew install imagemagick && brew install coffee-script
 ```
 
 Start using Zucchini
@@ -22,7 +26,7 @@ Start by creating a project scaffold:
 zucchini generate --project /path/to/my_project
 ```
 
-Create a feature scaffold for your first feature:  
+Create a feature scaffold for your first feature:
 
 ```
 zucchini generate --feature /path/to/my_project/features/my_feature
@@ -39,17 +43,17 @@ Add your device to features/support/config.yml.
 The [udidetect](https://github.com/vaskas/udidetect) utility comes in handy if you plan to add devices from time to time: `udidetect -z`.
 
 ```
-ZUCCHINI_DEVICE="My Device" zucchini run /path/to/my_feature 
+ZUCCHINI_DEVICE="My Device" zucchini run /path/to/my_feature
 ```
 
 Running on the iOS Simulator
 -------------------------------
 We strongly encourage you to run your Zucchini features on real hardware. However, you can run them on the iOS Simulator if you must.
 
-First off, modify your features/support/config.yml to include a full path to your compiled app, e.g.
+First off, modify your features/support/config.yml to include the path to your compiled app, e.g.
 
 ```
-app: /Users/vaskas/Library/Developer/Xcode/DerivedData/CoreDataBooks-ebeqiuqksrwwoscupvxuzjzrdfjz/Build/Products/Debug-iphonesimulator/CoreDataBooks.app
+app: ./Build/Products/Debug-iphonesimulator/CoreDataBooks.app
 ```
 
 Secondly, add an 'iOS Simulator' entry to the devices section (no UDID needed) and make sure you provide the actual value for 'screen' based on your iOS Simulator settings:
@@ -60,16 +64,29 @@ devices:
     screen: low_ios5
 ```
 
+Alternatively, you can specify the app path in the device section:
+
+```
+devices:
+  iOS Simulator:
+    screen: low_ios5
+    app: ./Build/Products/Debug-iphonesimulator/CoreDataBooks.app
+  iPad2:
+    screen: ipad_ios5
+    app: ./Build/Products/Debug-iphoneos/CoreDataBooks.app
+```
+
+
 Run it as usual:
 
 ```
-ZUCCHINI_DEVICE="iOS Simulator" zucchini run /path/to/my_feature 
+ZUCCHINI_DEVICE="iOS Simulator" zucchini run /path/to/my_feature
 ```
 
 See also
 ---------
 ```
-zucchini --help  
-zucchini run --help  
+zucchini --help
+zucchini run --help
 zucchini generate --help
 ```
