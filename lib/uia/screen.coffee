@@ -5,9 +5,9 @@ class Screen
   
   elements: {}                           
 
-  element: (name,context,requiredType = UIAElement) ->
+  element: (name,context = view,requiredType = UIAElement) ->
     element = if @elements[name] then @elements[name]() else context.$(name,requiredType)
-    throw "Element '#{name}' not defined for the screen '#{@name}'" unless element
+    raise "Element '#{name}' not defined for the screen '#{@name}'" unless element
     element
 
   actions :
@@ -30,13 +30,11 @@ class Screen
       target.delay(seconds)
 
     'Type "([^"]*)" in the "([^"]*)" field$': (text,element) ->
-      raise "Element '#{element}' not defined for the screen '#{@name}'" unless @elements[element]
-      @elements[element]().tap()
+      @element(element).tap()
       app.keyboard().typeString text
 
     'Clear the "([^"]*)" field$': (element) ->
-      raise "Element '#{element}' not defined for the screen '#{@name}'" unless @elements[element]
-      @elements[element]().setValue ""
+      @element(element).setValue ""
 
     'Cancel the alert' : ->
       alert = app.alert()
