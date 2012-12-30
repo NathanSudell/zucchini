@@ -21,15 +21,18 @@ raise = (message) -> throw new Error(message)
 # Prevent UIA from auto handling alerts
 UIATarget.onAlert = (alert) -> return true
 
+isNullElement = (element) ->
+  element.toString() == "[object UIAElementNil]"
+
 target = UIATarget.localTarget()
 app    = target.frontMostApp()
 view   = app.mainWindow()
 
-UIAElement.prototype.$ = (name) ->
+UIAElement.prototype.$ = (name,requiredType = UIAElement) ->
   target.pushTimeout(0)
   elem = null
   for el in this.elements()
-    elem = if el.name() == name then el else el.$(name)
+    elem = if el.name() == name and el instanceof requiredType then el else el.$(name,requiredType)
     break if elem
   target.popTimeout()
   elem
@@ -69,7 +72,7 @@ class Zucchini
       try
         screen = eval("new #{screenName.camelCase()}Screen")
       catch e
-        raise "Screen '#{screenName}' not defined"
+        screen = new Screen(screenName)
 
       for line in lines.slice(1)
          functionFound = false

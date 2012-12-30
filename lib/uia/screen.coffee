@@ -1,8 +1,15 @@
 class Screen
   constructor: (@name) ->
     if @anchor then target.waitForElement @anchor()
+    else if @name then target.waitForElement view.elements()[@name]
+  
+  elements: {}                           
 
-  elements: {}
+  element: (name,context,requiredType = UIAElement) ->
+    element = if @elements[name] then @elements[name]() else context.$(name,requiredType)
+    throw "Element '#{name}' not defined for the screen '#{@name}'" unless element
+    element
+
   actions :
     'Take a screenshot$' : ->
       target.captureScreenWithName(@name)
@@ -11,8 +18,10 @@ class Screen
       target.captureScreenWithName(name)
 
     'Tap "([^"]*)"$' : (element) ->
-      raise "Element '#{element}' not defined for the screen '#{@name}'" unless @elements[element]
-      @elements[element]().tap()
+      @element(element,view).tap()
+
+    'Choose "([^"]*)"$' : (actionSheetOptionName) ->
+      @element(actionSheetOptionName,app.actionSheet()).tap()
 
     'Confirm "([^"]*)"$' : (element) ->
       @actions['Tap "([^"]*)"$'].bind(this)(element)
